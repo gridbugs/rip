@@ -5,9 +5,7 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       TARGET: x86_64-pc-windows-msvc
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      TARGET: foo
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      TARGET: bar
 for:
   -
     matrix:
@@ -37,7 +35,11 @@ for:
         - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
     install:
       - sh: >-
-          echo "$TARGET"
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+          rustc -V
+
+          cargo -V
     build_script:
       - sh: >-
           echo "Hello, Ubuntu!"
@@ -49,7 +51,11 @@ for:
         - APPVEYOR_BUILD_WORKER_IMAGE: macOS
     install:
       - sh: >-
-          echo "$TARGET"
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+          rustc -V
+
+          cargo -V
     build_script:
       - sh: >-
           echo "Hello, macOS!"
