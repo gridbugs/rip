@@ -10,7 +10,7 @@ for:
       only:
         - image: Visual Studio 2019
     build_script:
-      - sh: echo "Hello, Windows!"
+      - ps: Write-Host "Hello, Windows!"
   -
     matrix:
       only:
