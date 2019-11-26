@@ -9,17 +9,17 @@ for:
     matrix:
       only:
         - image: Visual Studio 2019
-      build_script:
-        - sh: echo "Hello, Windows!"
+    build_script:
+      - sh: echo "Hello, Windows!"
   -
     matrix:
       only:
         - image: Ubuntu
-      build_script:
-        - sh: echo "Hello, Ubuntu!"
+    build_script:
+      - sh: echo "Hello, Ubuntu!"
   -
     matrix:
       only:
         - image: macOS
-      build_script:
-        - sh: echo "Hello, macOS!"
+    build_script:
+      - sh: echo "Hello, macOS!"
