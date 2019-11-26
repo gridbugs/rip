@@ -15,6 +15,8 @@ for:
       - sh: >-
           curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host x86_64-unknown-linux-gnu --default-toolchain stable --profile default -y
 
+          export PATH="$HOME/.cargo/bin:$PATH"
+
           rustc -V
 
           cargo -V
