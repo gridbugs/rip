@@ -2,9 +2,10 @@ version: '{build}'
 clone_depth: 1
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       HOST: x86_64-pc-windows-msvc
       TARGET: x86_64-pc-windows-msvc
+      BIN_NAME: rip-windows-x86_64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
@@ -18,7 +19,7 @@ for:
   -
     matrix:
       only:
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           TARGET: x86_64-pc-windows-msvc
     install:
       - cmd: >-
@@ -35,6 +36,17 @@ for:
     build_script:
       - cmd: >-
           cargo rustc --manifest-path=graphical/Cargo.toml -- -Ctarget-feature=+crt-static -Zunstable-options
+
+          set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
+
+          mkdir tmp
+
+          mkdir tmp\%FULL_NAME%
+
+          copy target\debug\rip_graphical tmp\%FULL_NAME%\%BIN_NAME%.exe
+
+          powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
+
   -
     matrix:
       only:
@@ -109,3 +121,11 @@ for:
           cargo build --manifest-path=graphical/Cargo.toml
 
           cargo build --manifest-path=ansi-terminal/Cargo.toml
+
+artifacts:
+- path: '*.zip'
+  name: files.gridbugs.org
+
+deploy:
+- provider: Environment
+  name: files.gridbugs.org
