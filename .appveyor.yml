@@ -4,6 +4,8 @@ environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       TARGET: x86_64-unknown-linux-gnu
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      TARGET: wasm32-unknown-unknown
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       TARGET: x86_64-apple-darwin
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
