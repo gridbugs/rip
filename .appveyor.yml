@@ -32,7 +32,9 @@ for:
 
     build_script:
       - sh: >-
-          echo "Hello, Ubuntu!"
+          cargo build --manifest-path=graphical/Cargo.toml
+
+          cargo build --manifest-path=ansi-terminal/Cargo.toml
 
   -
     matrix:
@@ -47,13 +49,19 @@ for:
 
           rustup target add $TARGET
 
+          cargo install wasm-bindgen-cli --force --version 0.2.55 # this has to match the version in Cargo.lock
+
           rustc -V
 
           cargo -V
 
     build_script:
       - sh: >-
-          echo "Hello, Ubuntu!"
+          pushd web
+
+          npm install
+
+          npm run build -- --mode development
 
   -
     matrix:
@@ -72,7 +80,9 @@ for:
 
     build_script:
       - sh: >-
-          echo "Hello, macOS!"
+          cargo build --manifest-path=graphical/Cargo.toml
+
+          cargo build --manifest-path=ansi-terminal/Cargo.toml
   -
     matrix:
       only:
@@ -92,7 +102,5 @@ for:
 
     build_script:
       - cmd: >-
-
-          echo "Hello, Windows!"
-
+          cargo build --manifest-path=graphical/Cargo.toml
 
