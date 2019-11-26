@@ -3,7 +3,9 @@ clone_depth: 1
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      TARGET: x86_64-unknown-linux-gnu
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      TARGET: x86_64-apple-darwin
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       TARGET: x86_64-pc-windows-msvc
 for:
@@ -13,7 +15,7 @@ for:
         - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
     install:
       - sh: >-
-          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host x86_64-unknown-linux-gnu --default-toolchain stable --profile default -y
+          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $TARGET --default-toolchain stable --profile minimal -y
 
           export PATH="$HOME/.cargo/bin:$PATH"
 
@@ -31,11 +33,9 @@ for:
         - APPVEYOR_BUILD_WORKER_IMAGE: macOS
     install:
       - sh: >-
-          curl -sSf -o rustup.sh https://sh.rustup.rs
+          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $TARGET --default-toolchain stable --profile minimal -y
 
-          bash rustup.sh --quiet
-
-          rustup default stable
+          export PATH="$HOME/.cargo/bin:$PATH"
 
           rustc -V
 
