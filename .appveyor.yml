@@ -34,7 +34,7 @@ for:
       - sh: >-
           echo "Hello, Ubuntu!"
 
--
+ -
     matrix:
       only:
         - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
