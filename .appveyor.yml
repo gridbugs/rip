@@ -10,8 +10,9 @@ for:
       only:
         - image: Visual Studio 2019
     build_script:
-      - cmd: >-
+      - ps: >-
         Write-Host "Hello, Windows!"
+
         Write-Host "Hello, Windows!"
   -
     matrix:
@@ -20,6 +21,7 @@ for:
     build_script:
       - sh: >-
         echo "Hello, Ubuntu!"
+
         echo "Hello, Ubuntu!"
   -
     matrix:
@@ -28,4 +30,5 @@ for:
     build_script:
       - sh: >-
         echo "Hello, macOS!"
+
         echo "Hello, macOS!"
