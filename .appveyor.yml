@@ -12,7 +12,6 @@ for:
     build_script:
       - ps: >-
           Write-Host "Hello, Windows!"
-
           Write-Host "Hello, Windows!"
   -
     matrix:
@@ -20,9 +19,7 @@ for:
         - image: Ubuntu
     build_script:
       - sh: >-
-
           echo "Hello, Ubuntu!"
-
           echo "Hello, Ubuntu!"
   -
     matrix:
@@ -30,7 +27,5 @@ for:
         - image: macOS
     build_script:
       - sh: >-
-
           echo "Hello, macOS!"
-
           echo "Hello, macOS!"
