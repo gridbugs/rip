@@ -2,6 +2,9 @@ version: '{build}'
 clone_depth: 1
 environment:
   matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      HOST: x86_64-pc-windows-msvc
+      TARGET: x86_64-pc-windows-msvc
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
@@ -11,10 +14,27 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       HOST: x86_64-apple-darwin
       TARGET: x86_64-apple-darwin
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      HOST: x86_64-pc-windows-msvc
-      TARGET: x86_64-pc-windows-msvc
 for:
+  -
+    matrix:
+      only:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+          TARGET: x86_64-pc-windows-msvc
+    install:
+      - cmd: >-
+          appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
+
+          rustup-init -yv --default-toolchain stable --default-host %HOST%
+
+          set PATH=%PATH%;%USERPROFILE%\.cargo\bin
+
+          rustc -V
+
+          cargo -V
+
+    build_script:
+      - cmd: >-
+          cargo rustc --manifest-path=graphical/Cargo.toml -- -Ctarget-feature=+crt-static
   -
     matrix:
       only:
@@ -89,24 +109,3 @@ for:
           cargo build --manifest-path=graphical/Cargo.toml
 
           cargo build --manifest-path=ansi-terminal/Cargo.toml
-  -
-    matrix:
-      only:
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-          TARGET: x86_64-pc-windows-msvc
-    install:
-      - cmd: >-
-          appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
-
-          rustup-init -yv --default-toolchain stable --default-host %HOST%
-
-          set PATH=%PATH%;%USERPROFILE%\.cargo\bin
-
-          rustc -V
-
-          cargo -V
-
-    build_script:
-      - cmd: >-
-          cargo build --manifest-path=graphical/Cargo.toml
-
