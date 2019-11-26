@@ -43,7 +43,7 @@ for:
 
           mkdir tmp\%FULL_NAME%
 
-          copy target\debug\rip_graphical tmp\%FULL_NAME%\%BIN_NAME%.exe
+          copy target\debug\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
 
           powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
 
