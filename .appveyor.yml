@@ -2,7 +2,7 @@ version: '{build}'
 clone_depth: 1
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       HOST: x86_64-pc-windows-msvc
       TARGET: x86_64-pc-windows-msvc
       BIN_NAME: rip-windows-x86_64
@@ -19,13 +19,13 @@ for:
   -
     matrix:
       only:
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
           TARGET: x86_64-pc-windows-msvc
     install:
       - cmd: >-
           appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
 
-          rustup-init -yv --default-toolchain nightly --default-host %HOST%
+          rustup-init -yv --default-toolchain stable --default-host %HOST%
 
           set PATH=%PATH%;%USERPROFILE%\.cargo\bin
 
@@ -35,7 +35,7 @@ for:
 
     build_script:
       - cmd: >-
-          cargo rustc --manifest-path=graphical/Cargo.toml -- -Ctarget-feature=+crt-static -Zunstable-options
+          cargo build --manifest-path=graphical/Cargo.toml
 
           set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
 
