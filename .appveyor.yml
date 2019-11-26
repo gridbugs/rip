@@ -11,24 +11,27 @@ for:
         - image: Visual Studio 2019
     build_script:
       - ps: >-
-        Write-Host "Hello, Windows!"
 
-        Write-Host "Hello, Windows!"
+          Write-Host "Hello, Windows!"
+
+          Write-Host "Hello, Windows!"
   -
     matrix:
       only:
         - image: Ubuntu
     build_script:
       - sh: >-
-        echo "Hello, Ubuntu!"
 
-        echo "Hello, Ubuntu!"
+          echo "Hello, Ubuntu!"
+
+          echo "Hello, Ubuntu!"
   -
     matrix:
       only:
         - image: macOS
     build_script:
       - sh: >-
-        echo "Hello, macOS!"
 
-        echo "Hello, macOS!"
+          echo "Hello, macOS!"
+
+          echo "Hello, macOS!"
