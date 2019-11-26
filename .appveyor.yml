@@ -8,10 +8,6 @@ environment:
       TARGET: foo
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       TARGET: bar
-image:
-  - Visual Studio 2019
-  - Ubuntu
-  - macOS
 for:
   -
     matrix:
