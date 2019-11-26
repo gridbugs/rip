@@ -24,7 +24,7 @@ for:
       - cmd: >-
           appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
 
-          rustup-init -yv --default-toolchain stable --default-host %HOST%
+          rustup-init -yv --default-toolchain nightly --default-host %HOST%
 
           set PATH=%PATH%;%USERPROFILE%\.cargo\bin
 
@@ -34,7 +34,7 @@ for:
 
     build_script:
       - cmd: >-
-          cargo rustc --manifest-path=graphical/Cargo.toml -- -Ctarget-feature=+crt-static
+          cargo rustc --manifest-path=graphical/Cargo.toml -- -Ctarget-feature=+crt-static -Zunstable-options
   -
     matrix:
       only:

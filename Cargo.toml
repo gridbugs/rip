@@ -3,7 +3,7 @@
 members = [
     "ecs",
     "vector",
-    "game",
+    "rip",
     "prototty",
     "native",
     "graphical",

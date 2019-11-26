@@ -598,22 +598,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "game"
-version = "0.1.0"
-dependencies = [
- "direction 0.17.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "ecs 0.1.0",
- "grid_2d 0.14.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "line_2d 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand_isaac 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "rgb24 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.103 (registry+https://github.com/rust-lang/crates.io-index)",
- "shadowcast 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "vector 0.1.0",
-]
-
-[[package]]
 name = "getopts"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1744,6 +1728,85 @@ dependencies = [
 ]
 
 [[package]]
+name = "rip"
+version = "0.1.0"
+dependencies = [
+ "direction 0.17.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ecs 0.1.0",
+ "grid_2d 0.14.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "line_2d 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_isaac 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rgb24 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.103 (registry+https://github.com/rust-lang/crates.io-index)",
+ "shadowcast 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector 0.1.0",
+]
+
+[[package]]
+name = "rip_ansi_terminal"
+version = "0.1.0"
+dependencies = [
+ "env_logger 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_ansi_terminal 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_native_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rip_native 0.1.0",
+ "rip_prototty 0.1.0",
+]
+
+[[package]]
+name = "rip_graphical"
+version = "0.1.0"
+dependencies = [
+ "env_logger 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_graphical 0.28.0 (git+https://github.com/stevebob/prototty)",
+ "prototty_graphical_gfx 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_native_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rip_native 0.1.0",
+ "rip_prototty 0.1.0",
+]
+
+[[package]]
+name = "rip_native"
+version = "0.1.0"
+dependencies = [
+ "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_file_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rip_prototty 0.1.0",
+ "serde_json 1.0.42 (registry+https://github.com/rust-lang/crates.io-index)",
+ "simon 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "rip_prototty"
+version = "0.1.0"
+dependencies = [
+ "direction 0.17.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hashbrown 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "line_2d 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_isaac 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rip 0.1.0",
+ "serde 1.0.103 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "rip_web"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_web 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rip_prototty 0.1.0",
+ "wasm-bindgen 0.2.55 (registry+https://github.com/rust-lang/crates.io-index)",
+ "wasm-logger 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rodio"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1754,69 +1817,6 @@ dependencies = [
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lewton 0.9.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "minimp3 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "roguelike_ansi_terminal"
-version = "0.1.0"
-dependencies = [
- "env_logger 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_ansi_terminal 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_native_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "roguelike_native 0.1.0",
- "roguelike_prototty 0.1.0",
-]
-
-[[package]]
-name = "roguelike_graphical"
-version = "0.1.0"
-dependencies = [
- "env_logger 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_graphical 0.28.0 (git+https://github.com/stevebob/prototty)",
- "prototty_graphical_gfx 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_native_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "roguelike_native 0.1.0",
- "roguelike_prototty 0.1.0",
-]
-
-[[package]]
-name = "roguelike_native"
-version = "0.1.0"
-dependencies = [
- "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_file_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "roguelike_prototty 0.1.0",
- "serde_json 1.0.42 (registry+https://github.com/rust-lang/crates.io-index)",
- "simon 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "roguelike_prototty"
-version = "0.1.0"
-dependencies = [
- "direction 0.17.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "game 0.1.0",
- "hashbrown 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "line_2d 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand_isaac 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.103 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "roguelike_web"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_web 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "roguelike_prototty 0.1.0",
- "wasm-bindgen 0.2.55 (registry+https://github.com/rust-lang/crates.io-index)",
- "wasm-logger 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

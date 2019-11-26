@@ -3,8 +3,8 @@ use prototty_graphical::*;
 #[cfg(feature = "prototty_graphical_gfx")]
 use prototty_graphical_gfx::*;
 use prototty_native_audio::NativeAudioPlayer;
-use roguelike_native::{simon::Arg, NativeCommon};
-use roguelike_prototty::{app, Frontend};
+use rip_native::{simon::Arg, NativeCommon};
+use rip_prototty::{app, Frontend};
 
 fn main() {
     env_logger::init();

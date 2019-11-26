@@ -1,8 +1,6 @@
 use crate::audio::{Audio, AudioTable};
 use crate::controls::{AppInput, Controls};
 use direction::{CardinalDirection, Direction};
-pub use game::Input as GameInput;
-use game::{CellVisibility, Event, Game, Layer, Tile, ToRenderEntity, VisibilityGrid};
 use line_2d::{Config as LineConfig, LineSegment};
 use prototty::event_routine::common_event::*;
 use prototty::event_routine::*;
@@ -12,6 +10,8 @@ use prototty_audio::{AudioPlayer, AudioProperties};
 use prototty_storage::{format, Storage};
 use rand::{Rng, SeedableRng};
 use rand_isaac::Isaac64Rng;
+pub use rip::Input as GameInput;
+use rip::{CellVisibility, Event, Game, Layer, Tile, ToRenderEntity, VisibilityGrid};
 use serde::{Deserialize, Serialize};
 use std::marker::PhantomData;
 use std::time::Duration;

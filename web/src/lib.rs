@@ -1,6 +1,6 @@
 use prototty_storage::Storage;
 use prototty_web::{Context, LocalStorage, Size, WebAudioPlayer};
-use roguelike_prototty::{app, Controls, Frontend, RngSeed};
+use rip_prototty::{app, Controls, Frontend, RngSeed};
 use wasm_bindgen::prelude::*;
 
 const SAVE_KEY: &str = "save";
