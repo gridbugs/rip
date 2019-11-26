@@ -45,6 +45,10 @@ for:
           TARGET: wasm32-unknown-unknown
     install:
       - sh: >-
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+
+          nvm use v12
+
           curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $HOST --default-toolchain stable --profile minimal -y
 
           export PATH="$HOME/.cargo/bin:$PATH"
