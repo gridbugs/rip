@@ -35,7 +35,7 @@ for:
 
     build_script:
       - cmd: >-
-          cargo rustc --manifest-path=graphical/Cargo.toml
+          cargo rustc --debug --manifest-path=graphical/Cargo.toml --no-default-features --features=prototty_graphical_gfx -- -Ctarget-feature=+crt-static
 
           set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
 
