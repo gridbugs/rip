@@ -35,7 +35,7 @@ for:
 
     build_script:
       - cmd: >-
-          cargo build --manifest-path=graphical/Cargo.toml
+          cargo rustc --release --manifest-path=graphical/Cargo.toml -- -Ctarget-feature=+crt-static
 
           set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
 
