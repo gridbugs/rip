@@ -13,7 +13,7 @@ for:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     install:
       - cmd: >-
-          curl -sSf -o rust-install.exe   https://static.rust-lang.org/dist/rust-nightly-%TARGET%.exe
+          curl -sSf -o rust-install.exe https://static.rust-lang.org/dist/rust-nightly-%TARGET%.exe
 
           rust-install.exe /VERYSILENT /NORESTART /DIR="C:\Program Files (x86)\Rust"
 
@@ -23,41 +23,52 @@ for:
 
           cargo -V
 
-
     build_script:
       - cmd: >-
-          echo "Hello, Windows!"
 
           echo "Hello, Windows!"
+
   -
     matrix:
       only:
         - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
     install:
       - sh: >-
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          curl -sSf -o rustup.sh https://sh.rustup.rs
+
+          bash rustup.sh
+
+          rustup default stable
 
           rustc -V
 
           cargo -V
+
     build_script:
       - sh: >-
           echo "Hello, Ubuntu!"
 
           echo "Hello, Ubuntu!"
+
   -
     matrix:
       only:
         - APPVEYOR_BUILD_WORKER_IMAGE: macOS
     install:
       - sh: >-
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          curl -sSf -o rustup.sh https://sh.rustup.rs
+
+          bash rustup.sh
+
+          rustup default stable
 
           rustc -V
 
           cargo -V
+
     build_script:
       - sh: >-
           echo "Hello, macOS!"
 
           echo "Hello, macOS!"
+
