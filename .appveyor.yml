@@ -3,23 +3,49 @@ clone_depth: 1
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      HOST: x86_64-unknown-linux-gnu
       TARGET: wasm32-unknown-unknown
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      HOST: x86_64-apple-darwin
       TARGET: x86_64-apple-darwin
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      HOST: x86_64-pc-windows-msvc
       TARGET: x86_64-pc-windows-msvc
 for:
   -
     matrix:
       only:
         - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+          TARGET: x86_64-unknown-linux-gnu
     install:
       - sh: >-
-          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $TARGET --default-toolchain stable --profile minimal -y
+          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $HOST --default-toolchain stable --profile minimal -y
 
           export PATH="$HOME/.cargo/bin:$PATH"
+
+          rustc -V
+
+          cargo -V
+
+    build_script:
+      - sh: >-
+          echo "Hello, Ubuntu!"
+
+-
+    matrix:
+      only:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+          TARGET: wasm32-unknown-unknown
+    install:
+      - sh: >-
+          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $HOST --default-toolchain stable --profile minimal -y
+
+          export PATH="$HOME/.cargo/bin:$PATH"
+
+          rustup target add $TARGET
 
           rustc -V
 
@@ -33,9 +59,10 @@ for:
     matrix:
       only:
         - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+          TARGET: x86_64-apple-darwin
     install:
       - sh: >-
-          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $TARGET --default-toolchain stable --profile minimal -y
+          curl -sSf https://sh.rustup.rs | sh -s -- --quiet --default-host $HOST --default-toolchain stable --profile minimal -y
 
           export PATH="$HOME/.cargo/bin:$PATH"
 
@@ -50,9 +77,10 @@ for:
     matrix:
       only:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+          TARGET: x86_64-pc-windows-msvc
     install:
       - cmd: >-
-          curl -sSf -o rust-install.exe https://static.rust-lang.org/dist/rust-stable-%TARGET%.exe
+          curl -sSf -o rust-install.exe https://static.rust-lang.org/dist/rust-stable-%HOST%.exe
 
           rust-install.exe /VERYSILENT /NORESTART /DIR="C:\Program Files (x86)\Rust"
 
