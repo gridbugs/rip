@@ -2,7 +2,7 @@
 use prototty_graphical::*;
 #[cfg(feature = "prototty_graphical_gfx")]
 use prototty_graphical_gfx::*;
-use prototty_native_audio::NativeAudioPlayer;
+//use prototty_native_audio::NativeAudioPlayer;
 use rip_native::{simon::Arg, NativeCommon};
 use rip_prototty::{app, Frontend};
 
@@ -46,7 +46,7 @@ fn main() {
         underline_top_offset: 0.8,
     })
     .unwrap();
-    let audio_player = NativeAudioPlayer::new_default_device();
+    let audio_player = NoAudio;
     let app = app(
         Frontend::Native,
         controls,
