@@ -3,8 +3,8 @@ clone_depth: 1
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      HOST: x86_64-pc-windows-msvc
-      TARGET: x86_64-pc-windows-msvc
+      HOST: x86_64-pc-windows-gnu
+      TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip-windows-x86_64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
@@ -20,7 +20,7 @@ for:
     matrix:
       only:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-          TARGET: x86_64-pc-windows-msvc
+          TARGET: x86_64-pc-windows-gnu
     install:
       - cmd: >-
           appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
