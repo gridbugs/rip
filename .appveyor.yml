@@ -2,6 +2,9 @@ version: '{build}'
 clone_depth: 1
 environment:
   matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      HOST: x86_64-apple-darwin
+      TARGET: x86_64-apple-darwin
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       HOST: x86_64-pc-windows-gnu
       TARGET: x86_64-pc-windows-gnu
@@ -12,9 +15,6 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: wasm32-unknown-unknown
-    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      HOST: x86_64-apple-darwin
-      TARGET: x86_64-apple-darwin
 for:
   -
     matrix:
@@ -73,6 +73,8 @@ for:
 
           cargo build --manifest-path=ansi-terminal/Cargo.toml
 
+          scripts/make_zip_unix.sh
+
   -
     matrix:
       only:
@@ -124,6 +126,8 @@ for:
           cargo build --manifest-path=graphical/Cargo.toml
 
           cargo build --manifest-path=ansi-terminal/Cargo.toml
+
+          scripts/make_zip_unix.sh
 
 artifacts:
 - path: '*.zip'

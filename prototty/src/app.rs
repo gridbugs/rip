@@ -235,7 +235,7 @@ where
 {
     fn view<F: Frame, C: ColModify>(&mut self, app_data: &'a AppData<S, A>, context: ViewContext<C>, frame: &mut F) {
         text::StringViewSingleLine::new(Style::new().with_bold(true)).view(
-            "Template Roguelike",
+            "RIP",
             context.add_offset(Coord::new(1, 1)),
             frame,
         );
