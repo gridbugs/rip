@@ -25,8 +25,6 @@ fn main() {
         save_file,
     } = NativeCommon::arg().with_help_default().parse_env_or_exit();
     let audio_player = NativeAudioPlayer::new_default_device();
-    println!("hi");
-    /*
     let context = Context::new(ContextDescriptor {
         font_bytes: FontBytes {
             normal: include_bytes!("./fonts/PxPlus_IBM_CGAthin.ttf").to_vec(),
@@ -57,5 +55,5 @@ fn main() {
         audio_player,
         rng_seed,
     );
-    context.run_app(app); */
+    context.run_app(app);
 }
