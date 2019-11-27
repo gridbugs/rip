@@ -74,7 +74,7 @@ for:
 
           cargo build --manifest-path=ansi-terminal/Cargo.toml
 
-          scripts/make_zip_unix.sh
+          MODE=debug scripts/make_zip_unix.sh
 
   -
     matrix:
@@ -128,7 +128,7 @@ for:
 
           cargo build --manifest-path=ansi-terminal/Cargo.toml
 
-          scripts/make_zip_unix.sh
+          MODE=debug scripts/make_zip_unix.sh
 
 artifacts:
 - path: '*.zip'
