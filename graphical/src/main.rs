@@ -20,13 +20,6 @@ fn main() {
             log::warn!("no output audio device - continuing without audio");
             None
         }
-        Err(NativeAudioError::PanicDuringInit(message)) => {
-            log::warn!(
-                "audio system panicked during init - continuing without audio\n{:#?}",
-                message
-            );
-            None
-        }
     };
     let context = Context::new(ContextDescriptor {
         font_bytes: FontBytes {
