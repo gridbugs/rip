@@ -3,7 +3,7 @@ clone_depth: 1
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      HOST: x86_64-pc-windows-msvs
+      HOST: x86_64-pc-windows-msvc
       TARGET: x86_64-pc-windows-msvc
       BIN_NAME: rip-windows-x86_64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
