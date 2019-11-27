@@ -6,16 +6,6 @@ use prototty_native_audio::NativeAudioPlayer;
 use rip_native::{simon::Arg, NativeCommon};
 use rip_prototty::{app, Frontend};
 
-struct NoAudio;
-
-impl prototty_audio::AudioPlayer for NoAudio {
-    type Sound = ();
-    fn play(&self, _sound: &Self::Sound, _properties: prototty_audio::AudioProperties) {}
-    fn load_sound(&self, _bytes: &'static [u8]) -> Self::Sound {
-        ()
-    }
-}
-
 fn main() {
     env_logger::init();
     let NativeCommon {
