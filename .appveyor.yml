@@ -2,13 +2,13 @@ version: '{build}'
 clone_depth: 1
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      HOST: x86_64-apple-darwin
-      TARGET: x86_64-apple-darwin
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       HOST: x86_64-pc-windows-gnu
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip-windows-x86_64
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      HOST: x86_64-apple-darwin
+      TARGET: x86_64-apple-darwin
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
@@ -39,7 +39,7 @@ for:
 
     build_script:
       - cmd: >-
-          cargo rustc --manifest-path=graphical/Cargo.toml -- -Clink-args="/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+          cargo rustc --manifest-path=graphical/Cargo.toml
 
           set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
 
