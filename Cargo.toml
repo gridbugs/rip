@@ -15,6 +15,8 @@ members = [
 lto = true
 
 [patch.crates-io]
+prototty_audio = { git = "https://github.com/stevebob/prototty" }
+prototty_native_audio = { git = "https://github.com/stevebob/prototty" }
 prototty_render = { git = "https://github.com/stevebob/prototty" }
 prototty_input = { git = "https://github.com/stevebob/prototty" }
 prototty_app = { git = "https://github.com/stevebob/prototty" }

@@ -1386,7 +1386,7 @@ dependencies = [
 [[package]]
 name = "prototty_audio"
 version = "0.28.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+source = "git+https://github.com/stevebob/prototty#b28def43e91acab017bb1d7c5b6a086561f90355"
 
 [[package]]
 name = "prototty_decorator"
@@ -1484,9 +1484,9 @@ dependencies = [
 [[package]]
 name = "prototty_native_audio"
 version = "0.28.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+source = "git+https://github.com/stevebob/prototty#b28def43e91acab017bb1d7c5b6a086561f90355"
 dependencies = [
- "prototty_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_audio 0.28.0 (git+https://github.com/stevebob/prototty)",
  "rodio 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -1529,7 +1529,7 @@ dependencies = [
  "js-sys 0.3.32 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "prototty_app 0.28.0 (git+https://github.com/stevebob/prototty)",
- "prototty_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_audio 0.28.0 (git+https://github.com/stevebob/prototty)",
  "prototty_input 0.28.0 (git+https://github.com/stevebob/prototty)",
  "prototty_render 0.28.0 (git+https://github.com/stevebob/prototty)",
  "prototty_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1749,7 +1749,7 @@ version = "0.1.0"
 dependencies = [
  "env_logger 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "prototty_ansi_terminal 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_native_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_native_audio 0.28.0 (git+https://github.com/stevebob/prototty)",
  "rip_native 0.1.0",
  "rip_prototty 0.1.0",
 ]
@@ -1759,9 +1759,10 @@ name = "rip_graphical"
 version = "0.1.0"
 dependencies = [
  "env_logger 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "prototty_graphical 0.28.0 (git+https://github.com/stevebob/prototty)",
  "prototty_graphical_gfx 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_native_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_native_audio 0.28.0 (git+https://github.com/stevebob/prototty)",
  "rip_native 0.1.0",
  "rip_prototty 0.1.0",
 ]
@@ -1785,7 +1786,7 @@ dependencies = [
  "hashbrown 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "line_2d 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "prototty 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "prototty_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "prototty_audio 0.28.0 (git+https://github.com/stevebob/prototty)",
  "prototty_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand_isaac 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2771,7 +2772,7 @@ dependencies = [
 "checksum prototty 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8d091d92976885063ccef6fb39d8d0709afeb13729802bb879119683a78fc426"
 "checksum prototty_ansi_terminal 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "785c003c246ad53ed1ded52d5675669ea1cc1378e3486fcd4157d2048cf44a67"
 "checksum prototty_app 0.28.0 (git+https://github.com/stevebob/prototty)" = "<none>"
-"checksum prototty_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "57777b965f42daaab4db10b9980eb059878f23f7c3347126cc06d2f630e28c35"
+"checksum prototty_audio 0.28.0 (git+https://github.com/stevebob/prototty)" = "<none>"
 "checksum prototty_decorator 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "648db0a028a3cb1e6bce38609cef4f0ebc8b6a01e17262dced199a991cc83e11"
 "checksum prototty_event_routine 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "18083f2b8bd56586fb165b7d13b47650487220d8dbf6fb1dcd666895e170791b"
 "checksum prototty_file_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d57253a03e9e544fcac17a166495c3cc61685a355ee95289b6650bac3874d9a4"
@@ -2781,7 +2782,7 @@ dependencies = [
 "checksum prototty_graphical_gfx 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "276790a5062a6664f7188b778c8049d9e7706fbfc0b3c91b9d0d5e18aa82062b"
 "checksum prototty_input 0.28.0 (git+https://github.com/stevebob/prototty)" = "<none>"
 "checksum prototty_menu 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "733dcd1fa431974a9872374c23711bb0b8ae32cf096bcca41be838ade7c3d73f"
-"checksum prototty_native_audio 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "43a6651d9fa53ec2302b687860a0b9c16e9b87d1576f7008928962dfa176356c"
+"checksum prototty_native_audio 0.28.0 (git+https://github.com/stevebob/prototty)" = "<none>"
 "checksum prototty_render 0.28.0 (git+https://github.com/stevebob/prototty)" = "<none>"
 "checksum prototty_storage 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f521b28b93326aedc708fcc23fdb91788775793b36e3fac0ddcece3f6969465e"
 "checksum prototty_text 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "53c81f0be4b111621c4490c4a8f16b99bf5b9f5836c4bafa273abd22c6568619"
