@@ -39,7 +39,7 @@ for:
 
     build_script:
       - cmd: >-
-          cargo rustc --manifest-path=graphical/Cargo.toml
+          cargo rustc --release --manifest-path=graphical/Cargo.toml
 
           set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
 
@@ -47,7 +47,7 @@ for:
 
           mkdir tmp\%FULL_NAME%
 
-          copy target\debug\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
+          copy target\release\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
 
           powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
 
@@ -70,11 +70,11 @@ for:
 
     build_script:
       - sh: >-
-          cargo build --manifest-path=graphical/Cargo.toml
+          cargo build --release --manifest-path=graphical/Cargo.toml
 
-          cargo build --manifest-path=ansi-terminal/Cargo.toml
+          cargo build --release --manifest-path=ansi-terminal/Cargo.toml
 
-          MODE=debug ZIP_NAME=rip-linux-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
+          MODE=release ZIP_NAME=rip-linux-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
 
   -
     matrix:
@@ -105,7 +105,7 @@ for:
 
           npm install
 
-          npm run build -- --mode development
+          npm run build -- --mode production
 
   -
     matrix:
@@ -124,11 +124,11 @@ for:
 
     build_script:
       - sh: >-
-          cargo build --manifest-path=graphical/Cargo.toml
+          cargo build --release --manifest-path=graphical/Cargo.toml
 
-          cargo build --manifest-path=ansi-terminal/Cargo.toml
+          cargo build --release --manifest-path=ansi-terminal/Cargo.toml
 
-          MODE=debug ZIP_NAME=rip-macos-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
+          MODE=release ZIP_NAME=rip-macos-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
 
 artifacts:
 - path: '*.zip'
