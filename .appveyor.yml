@@ -128,7 +128,7 @@ for:
           zip -r rip-web-$APPVEYOR_REPO_BRANCH.zip rip-web-$APPVEYOR_REPO_BRANCH
 
     artifacts:
-    - path: '*.zip'
+    - path: 'web/*.zip'
       name: games.gridbugs.org
 
     deploy:
