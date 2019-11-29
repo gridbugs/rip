@@ -121,7 +121,7 @@ for:
 
           npm install
 
-          npm run build -- --mode development
+          npm run build -- --mode production
 
           mkdir rip
 
