@@ -2,6 +2,9 @@ version: '{build}'
 clone_depth: 1
 environment:
   matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      HOST: x86_64-unknown-linux-gnu
+      TARGET: wasm32-unknown-unknown
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       HOST: x86_64-pc-windows-gnu
       TARGET: x86_64-pc-windows-gnu
@@ -12,9 +15,6 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      HOST: x86_64-unknown-linux-gnu
-      TARGET: wasm32-unknown-unknown
 for:
   -
     matrix:
@@ -51,6 +51,14 @@ for:
 
           powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
 
+    artifacts:
+    - path: '*.zip'
+      name: files.gridbugs.org
+
+    deploy:
+    - provider: Environment
+      name: files.gridbugs.org
+
   -
     matrix:
       only:
@@ -75,6 +83,14 @@ for:
           cargo build --release --manifest-path=ansi-terminal/Cargo.toml
 
           MODE=release ZIP_NAME=rip-linux-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
+
+    artifacts:
+    - path: '*.zip'
+      name: files.gridbugs.org
+
+    deploy:
+    - provider: Environment
+      name: files.gridbugs.org
 
   -
     matrix:
@@ -105,7 +121,19 @@ for:
 
           npm install
 
-          npm run build -- --mode production
+          npm run build -- --mode development
+
+          mv dist rip-web-$APPVEYOR_REPO_BRANCH
+
+          zip -r rip-web-$APPVEYOR_REPO_BRANCH.zip rip-web-$APPVEYOR_REPO_BRANCH
+
+    artifacts:
+    - path: '*.zip'
+      name: games.gridbugs.org
+
+    deploy:
+    - provider: Environment
+      name: games.gridbugs.org
 
   -
     matrix:
@@ -130,10 +158,10 @@ for:
 
           MODE=release ZIP_NAME=rip-macos-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
 
-artifacts:
-- path: '*.zip'
-  name: files.gridbugs.org
+    artifacts:
+    - path: '*.zip'
+      name: files.gridbugs.org
 
-deploy:
-- provider: Environment
-  name: files.gridbugs.org
+    deploy:
+    - provider: Environment
+      name: files.gridbugs.org
