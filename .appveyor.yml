@@ -123,12 +123,16 @@ for:
 
           npm run build -- --mode development
 
-          mv dist rip-web-$APPVEYOR_REPO_BRANCH
+          popd
 
-          zip -r rip-web-$APPVEYOR_REPO_BRANCH.zip rip-web-$APPVEYOR_REPO_BRANCH
+          mkdir rip-web
+
+          mv web/dist rip-web/$APPVEYOR_REPO_BRANCH
+
+          zip -r rip-web.zip rip-web
 
     artifacts:
-    - path: 'web/*.zip'
+    - path: '*.zip'
       name: games.gridbugs.org
 
     deploy:
