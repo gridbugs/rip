@@ -41,11 +41,7 @@ for:
           TARGET: x86_64-pc-windows-gnu
     install:
       - cmd: >-
-          if "%MODE%" == "release" (
-            'echo "a"'
-          ) else (
-            'echo "b"'
-          )
+          if "%MODE%" == "release" ( set RELEASE_FLAG="--release"& set TARGET_DIR="release"& set NAME_SUFFIX="" ) else ( set RELEASE_FLAG="--debug"& set TARGET_DIR="debug"& set NAME_SUFFIX="-debug")
 
           appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
 
