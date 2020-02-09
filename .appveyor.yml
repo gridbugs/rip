@@ -7,19 +7,19 @@ environment:
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip
       ARCHIVE_NAME: rip-windows-x86_64
-      MODE: debug
+      MODE: release
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
-      MODE: debug
+      MODE: release
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       HOST: x86_64-apple-darwin
       TARGET: x86_64-apple-darwin
-      MODE: debug
+      MODE: release
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: wasm32-unknown-unknown
-      MODE: debug
+      MODE: release
 
 for:
   -
@@ -90,7 +90,7 @@ for:
 
     build_script:
       - sh: >-
-          if [ "$MODE" == "release"]; then
+          if [ "$MODE" == "release" ]; then
             TARGET_DIR="release"
             RELEASE_FLAG="--release"
             NAME_SUFFIX=""
@@ -102,17 +102,17 @@ for:
 
           cargo build $RELEASE_FLAG --manifest-path=graphical/Cargo.toml --no-default-features --features=prototty_graphical_gfx
 
-          mv target/$TARGET_DIR/rip_graphical{,_opengl}
+          mv -v target/$TARGET_DIR/rip_graphical{,_opengl}
 
           cargo build $RELEASE_FLAG --manifest-path=graphical/Cargo.toml
 
           cargo build $RELEASE_FLAG --manifest-path=ansi-terminal/Cargo.toml
 
-          strip target/$TARGET_DIR/rip_graphical_opengl
+          strip -v target/$TARGET_DIR/rip_graphical_opengl
 
-          strip target/$TARGET_DIR/rip_graphical
+          strip -v target/$TARGET_DIR/rip_graphical
 
-          strip target/$TARGET_DIR/rip_ansi_terminal
+          strip -v target/$TARGET_DIR/rip_ansi_terminal
 
           MODE=$MODE ZIP_NAME=rip-linux-x86_64$NAME_SUFFIX-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
 
@@ -153,7 +153,7 @@ for:
 
           npm install
 
-          if [ "$MODE" == "release"]; then
+          if [ "$MODE" == "release" ]; then
             BUILD_MODE=production
           else
             BUILD_MODE=development
@@ -196,7 +196,7 @@ for:
 
     build_script:
       - sh: >-
-          if [ "$MODE" == "release"]; then
+          if [ "$MODE" == "release" ]; then
             TARGET_DIR="release"
             RELEASE_FLAG="--release"
             NAME_SUFFIX=""
@@ -208,15 +208,17 @@ for:
 
           cargo build $RELEASE_FLAG --manifest-path=graphical/Cargo.toml --no-default-features --features=prototty_graphical_gfx
 
-          mv target/$TARGET_DIR/rip_graphical{,_opengl}
+          mv -v target/$TARGET_DIR/rip_graphical{,_opengl}
 
           cargo build $RELEASE_FLAG --manifest-path=graphical/Cargo.toml
 
           cargo build $RELEASE_FLAG --manifest-path=ansi-terminal/Cargo.toml
 
-          strip target/$TARGET_DIR/rip_graphical
+          strip -v target/$TARGET_DIR/rip_graphical_opengl
 
-          strip target/$TARGET_DIR/rip_ansi_terminal
+          strip -v target/$TARGET_DIR/rip_graphical
+
+          strip -v target/$TARGET_DIR/rip_ansi_terminal
 
           MODE=$MODE ZIP_NAME=rip-macos-x86_64$NAME_SUFFIX-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
 
