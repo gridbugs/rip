@@ -7,13 +7,10 @@ environment:
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip-windows-x86_64
       MODE: debug
-      GRAPHICAL_BUILD_FLAGS:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
       MODE: debug
-      GRAPHICAL_BUILD_FLAGS:
-      GRAPHICAL_BUILD_FLAGS: --no-default-features --features=prototty_graphical_gfx
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       HOST: x86_64-apple-darwin
       TARGET: x86_64-apple-darwin
