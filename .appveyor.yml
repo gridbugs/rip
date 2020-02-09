@@ -2,19 +2,37 @@ version: '{build}'
 clone_depth: 10
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      HOST: x86_64-apple-darwin
-      TARGET: x86_64-apple-darwin
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      HOST: x86_64-unknown-linux-gnu
-      TARGET: wasm32-unknown-unknown
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       HOST: x86_64-pc-windows-gnu
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip-windows-x86_64
+      RELEASE:
+      GRAPHICAL_BUILD_FLAGS:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      HOST: x86_64-pc-windows-gnu
+      TARGET: x86_64-pc-windows-gnu
+      BIN_NAME: rip-windows-opengl-x86_64
+      RELEASE:
+      GRAPHICAL_BUILD_FLAGS: --no-default-features --features=prototty_graphical_gfx
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
+      RELEASE:
+      GRAPHICAL_BUILD_FLAGS:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      HOST: x86_64-unknown-linux-gnu
+      TARGET: x86_64-unknown-linux-gnu
+      RELEASE:
+      GRAPHICAL_BUILD_FLAGS: --no-default-features --features=prototty_graphical_gfx
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      HOST: x86_64-apple-darwin
+      TARGET: x86_64-apple-darwin
+      RELEASE:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      HOST: x86_64-unknown-linux-gnu
+      TARGET: wasm32-unknown-unknown
+      RELEASE:
+
 for:
   -
     matrix:
@@ -39,7 +57,7 @@ for:
 
     build_script:
       - cmd: >-
-          cargo build --release --manifest-path=graphical/Cargo.toml
+          cargo build %RELEASE% --manifest-path=graphical/Cargo.toml %GRAPHICAL_BUILD_FLAGS%
 
           set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
 
@@ -78,9 +96,9 @@ for:
 
     build_script:
       - sh: >-
-          cargo build --release --manifest-path=graphical/Cargo.toml
+          cargo build $RELEASE --manifest-path=graphical/Cargo.toml $GRAPHICAL_BUILD_FLAGS
 
-          cargo build --release --manifest-path=ansi-terminal/Cargo.toml
+          cargo build $RELEASE --manifest-path=ansi-terminal/Cargo.toml
 
           strip target/release/rip_graphical
 
@@ -125,7 +143,13 @@ for:
 
           npm install
 
-          npm run build -- --mode production
+          if [ "$RELEASE" == "--release"]; then
+            MODE=production
+          else
+            MODE=development
+          fi
+
+          npm run build -- --mode $MODE
 
           mkdir rip
 
@@ -162,9 +186,9 @@ for:
 
     build_script:
       - sh: >-
-          cargo build --release --manifest-path=graphical/Cargo.toml
+          cargo build $RELEASE --manifest-path=graphical/Cargo.toml
 
-          cargo build --release --manifest-path=ansi-terminal/Cargo.toml
+          cargo build $RELEASE --manifest-path=ansi-terminal/Cargo.toml
 
           strip target/release/rip_graphical
 
