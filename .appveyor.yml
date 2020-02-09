@@ -6,32 +6,32 @@ environment:
       HOST: x86_64-pc-windows-gnu
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip-windows-x86_64
-      RELEASE:
+      MODE: debug
       GRAPHICAL_BUILD_FLAGS:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       HOST: x86_64-pc-windows-gnu
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip-windows-opengl-x86_64
-      RELEASE:
+      MODE: debug
       GRAPHICAL_BUILD_FLAGS: --no-default-features --features=prototty_graphical_gfx
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
-      RELEASE:
+      MODE: debug
       GRAPHICAL_BUILD_FLAGS:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
-      RELEASE:
+      MODE: debug
       GRAPHICAL_BUILD_FLAGS: --no-default-features --features=prototty_graphical_gfx
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       HOST: x86_64-apple-darwin
       TARGET: x86_64-apple-darwin
-      RELEASE:
+      MODE: debug
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: wasm32-unknown-unknown
-      RELEASE:
+      MODE: debug
 
 for:
   -
@@ -57,15 +57,25 @@ for:
 
     build_script:
       - cmd: >-
-          cargo build %RELEASE% --manifest-path=graphical/Cargo.toml %GRAPHICAL_BUILD_FLAGS%
+          if "%MODE%" == "release" (
+            set RELEASE_FLAG="--release" &
+            set TARGET_DIR="release" &
+            set NAME_SUFFIX=""
+          ) else (
+            set RELEASE_FLAG="" &
+            set TARGET_DIR="debug" &
+            set NAME_SUFFIX="-debug"
+          )
 
-          set FULL_NAME=%BIN_NAME%-%APPVEYOR_REPO_BRANCH%
+          cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml %GRAPHICAL_BUILD_FLAGS%
+
+          set FULL_NAME=%BIN_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
 
           mkdir tmp
 
           mkdir tmp\%FULL_NAME%
 
-          copy target\release\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
+          copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
 
           powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
 
