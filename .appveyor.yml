@@ -57,7 +57,7 @@ for:
 
     build_script:
       - cmd: >-
-          if "%MODE%" == "release" ( set RELEASE_FLAG="--release"& set TARGET_DIR="release"& set NAME_SUFFIX="" ) else ( set RELEASE_FLAG=""& set TARGET_DIR="debug"& set NAME_SUFFIX="-debug")
+          if "%MODE%" == "release" ( set RELEASE_FLAG=--release& set TARGET_DIR=release& set NAME_SUFFIX= ) else ( set RELEASE_FLAG=& set TARGET_DIR=debug& set NAME_SUFFIX=-debug)
 
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml %GRAPHICAL_BUILD_FLAGS%
 
