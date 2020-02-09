@@ -57,7 +57,7 @@ for:
 
     build_script:
       - cmd: >-
-          if "%MODE%" == "release" (
+          if "%MODE" == "release" (
 
             set RELEASE_FLAG="--release"
 
