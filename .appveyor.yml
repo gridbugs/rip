@@ -7,19 +7,19 @@ environment:
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip
       ARCHIVE_NAME: rip-windows-x86_64
-      MODE: release
+      MODE: debug
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
-      MODE: release
+      MODE: debug
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       HOST: x86_64-apple-darwin
       TARGET: x86_64-apple-darwin
-      MODE: release
+      MODE: debug
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: wasm32-unknown-unknown
-      MODE: release
+      MODE: debug
 
 for:
   -
@@ -64,6 +64,8 @@ for:
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml --no-default-features --features=prototty_graphical_gfx
 
           copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%-opengl.exe
+
+          copy extras\windows\* tmp\%FULL_NAME%
 
           powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
 
