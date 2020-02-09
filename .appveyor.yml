@@ -45,7 +45,9 @@ for:
 
     build_script:
       - cmd: >-
-          if "%MODE%" == "release" ( set RELEASE_FLAG=--release& set TARGET_DIR=release& set NAME_SUFFIX= ) else ( set RELEASE_FLAG=& set TARGET_DIR=debug& set NAME_SUFFIX=-debug )
+          echo on
+
+          if "%MODE%" == "release" ( set RELEASE_FLAG=--release& set TARGET_DIR=release& set NAME_SUFFIX=) else ( set RELEASE_FLAG=& set TARGET_DIR=debug& set NAME_SUFFIX=-debug)
 
           set FULL_NAME=%ARCHIVE_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
 
