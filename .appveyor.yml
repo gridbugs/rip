@@ -41,8 +41,6 @@ for:
           TARGET: x86_64-pc-windows-gnu
     install:
       - cmd: >-
-          if "%MODE%" == "release" ( set RELEASE_FLAG="--release"& set TARGET_DIR="release"& set NAME_SUFFIX="" ) else ( set RELEASE_FLAG="--debug"& set TARGET_DIR="debug"& set NAME_SUFFIX="-debug")
-
           appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
 
           rustup-init -yv --default-toolchain stable --default-host %HOST%
@@ -59,6 +57,8 @@ for:
 
     build_script:
       - cmd: >-
+          if "%MODE%" == "release" ( set RELEASE_FLAG="--release"& set TARGET_DIR="release"& set NAME_SUFFIX="" ) else ( set RELEASE_FLAG=""& set TARGET_DIR="debug"& set NAME_SUFFIX="-debug")
+
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml %GRAPHICAL_BUILD_FLAGS%
 
           set FULL_NAME=%BIN_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
@@ -98,15 +98,23 @@ for:
 
     build_script:
       - sh: >-
-          cargo build $RELEASE --manifest-path=graphical/Cargo.toml $GRAPHICAL_BUILD_FLAGS
+          if [ "$MODE" == "release"]; then
+            TARGET_DIR="release"
+            RELEASE_FLAG="--release"
+          else
+            TARGET_DIR="debug"
+            RELEASE_FLAG=""
+          fi
 
-          cargo build $RELEASE --manifest-path=ansi-terminal/Cargo.toml
+          cargo build $RELEASE_FLAG --manifest-path=graphical/Cargo.toml $GRAPHICAL_BUILD_FLAGS
 
-          strip target/release/rip_graphical
+          cargo build $RELEASE_FLAG --manifest-path=ansi-terminal/Cargo.toml
 
-          strip target/release/rip_terminal
+          strip target/$TARGET_DIR/rip_graphical
 
-          MODE=release ZIP_NAME=rip-linux-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
+          strip target/$TARGET_DIR/rip_terminal
+
+          MODE=$MODE ZIP_NAME=rip-linux-x86_64-$APPVEYOR_REPO_BRANCH scripts/make_zip_unix.sh
 
     artifacts:
     - path: '*.zip'
