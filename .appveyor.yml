@@ -5,7 +5,8 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       HOST: x86_64-pc-windows-gnu
       TARGET: x86_64-pc-windows-gnu
-      BIN_NAME: rip-windows-x86_64
+      BIN_NAME: rip
+      ARCHIVE_NAME: rip-windows-x86_64
       MODE: debug
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
@@ -46,7 +47,7 @@ for:
       - cmd: >-
           if "%MODE%" == "release" ( set RELEASE_FLAG=--release& set TARGET_DIR=release& set NAME_SUFFIX= ) else ( set RELEASE_FLAG=& set TARGET_DIR=debug& set NAME_SUFFIX=-debug)
 
-          set FULL_NAME=%BIN_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
+          set FULL_NAME=%ARCHIVE_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
 
           mkdir tmp
 
