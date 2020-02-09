@@ -55,6 +55,8 @@ for:
 
           mkdir tmp\%FULL_NAME%
 
+          copy extras\windows\* tmp\%FULL_NAME%
+
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml
 
           echo copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
@@ -64,8 +66,6 @@ for:
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml --no-default-features --features=prototty_graphical_gfx
 
           copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%-opengl.exe
-
-          copy extras\windows\* tmp\%FULL_NAME%
 
           powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
 
