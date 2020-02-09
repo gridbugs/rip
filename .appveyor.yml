@@ -41,10 +41,10 @@ for:
           TARGET: x86_64-pc-windows-gnu
     install:
       - cmd: >-
-          if "%MODE%" == "release" (
-            echo "a"
-          ) else (
-            echo "b"
+          if "%MODE%" == "release" (\
+            echo "a"\
+          ) else (\
+            echo "b"\
           )
 
           appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
