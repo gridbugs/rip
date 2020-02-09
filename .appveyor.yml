@@ -7,7 +7,7 @@ environment:
       TARGET: x86_64-pc-windows-gnu
       BIN_NAME: rip
       ARCHIVE_NAME: rip-windows-x86_64
-      MODE: release
+      MODE: debug
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       HOST: x86_64-unknown-linux-gnu
       TARGET: x86_64-unknown-linux-gnu
@@ -45,7 +45,7 @@ for:
 
     build_script:
       - cmd: >-
-          if "%MODE%" == "release" ( set RELEASE_FLAG=--release& set TARGET_DIR=release& set NAME_SUFFIX= ) else ( set RELEASE_FLAG=& set TARGET_DIR=debug& set NAME_SUFFIX=-debug)
+          if "%MODE%" == "release" ( set RELEASE_FLAG=--release& set TARGET_DIR=release& set NAME_SUFFIX= ) else ( set RELEASE_FLAG=& set TARGET_DIR=debug& set NAME_SUFFIX=-debug )
 
           set FULL_NAME=%ARCHIVE_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
 
@@ -54,6 +54,8 @@ for:
           mkdir tmp\%FULL_NAME%
 
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml
+
+          echo copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
 
           copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
 
