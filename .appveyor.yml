@@ -46,21 +46,19 @@ for:
       - cmd: >-
           if "%MODE%" == "release" ( set RELEASE_FLAG=--release& set TARGET_DIR=release& set NAME_SUFFIX= ) else ( set RELEASE_FLAG=& set TARGET_DIR=debug& set NAME_SUFFIX=-debug)
 
+          set FULL_NAME=%BIN_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
+
           mkdir tmp
 
           mkdir tmp\%FULL_NAME%
 
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml
 
-          set FULL_NAME=%BIN_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
-
           copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
 
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml --no-default-features --features=prototty_graphical_gfx
 
-          set FULL_NAME=%BIN_NAME%-opengl%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
-
-          copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%.exe
+          copy target\%TARGET_DIR%\rip_graphical.exe tmp\%FULL_NAME%\%BIN_NAME%-opengl.exe
 
           powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('tmp', '%FULL_NAME%.zip'); }"
 
