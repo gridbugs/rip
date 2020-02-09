@@ -41,6 +41,12 @@ for:
           TARGET: x86_64-pc-windows-gnu
     install:
       - cmd: >-
+          if "%MODE%" == "release" (
+            echo "a"
+          ) else (
+            echo "b"
+          )
+
           appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
 
           rustup-init -yv --default-toolchain stable --default-host %HOST%
@@ -57,8 +63,6 @@ for:
 
     build_script:
       - cmd: >-
-          if "%MODE%" == "release" (echo "a") else (echo "b")
-
           cargo build %RELEASE_FLAG% --manifest-path=graphical/Cargo.toml %GRAPHICAL_BUILD_FLAGS%
 
           set FULL_NAME=%BIN_NAME%%NAME_SUFFIX%-%APPVEYOR_REPO_BRANCH%
