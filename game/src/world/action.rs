@@ -165,6 +165,8 @@ impl World {
 
     fn character_die(&mut self, character: Entity) {
         self.spatial.remove(character);
+        self.components.remove_entity(character);
+        self.entity_allocator.free(character);
     }
 
     fn add_blood_stain_to_floor(&mut self, coord: Coord) {
