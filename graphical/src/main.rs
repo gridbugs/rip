@@ -1,23 +1,16 @@
 #![windows_subsystem = "windows"]
-#[cfg(feature = "prototty_graphical")]
-use prototty_graphical as graphical;
-#[cfg(feature = "prototty_graphical_gfx")]
-use prototty_graphical_gfx as graphical;
-use rip_native::{simon::*, NativeCommon};
-use rip_prototty::{app, AutoPlay, Frontend, Fullscreen};
+use chargrid_graphical as graphical;
+use rip_app::{app, AutoPlay, Frontend, Fullscreen};
+use rip_native::{meap, NativeCommon};
 
-#[cfg(feature = "prototty_graphical")]
 const FULLSCREEN_SUPPORTED: bool = true;
-
-#[cfg(feature = "prototty_graphical_gfx")]
-const FULLSCREEN_SUPPORTED: bool = false;
 
 const CELL_SIZE: f64 = 16.;
 
 #[cfg(target_os = "windows")]
 mod graphical_env {
-    use rip_prototty::Env;
     use super::graphical::WindowHandle;
+    use rip_app::Env;
     use std::cell::RefCell;
     pub struct GraphicalEnv {
         window_handle: WindowHandle,
@@ -53,8 +46,8 @@ mod graphical_env {
 
 #[cfg(not(target_os = "windows"))]
 mod graphical_env {
-    use rip_prototty::Env;
     use super::graphical::WindowHandle;
+    use rip_app::Env;
     pub struct GraphicalEnv {
         window_handle: WindowHandle,
     }
@@ -82,8 +75,8 @@ mod graphical_env {
     }
 }
 
-use graphical_env::*;
 use graphical::*;
+use graphical_env::*;
 
 struct Args {
     native_common: NativeCommon,
@@ -91,19 +84,25 @@ struct Args {
 }
 
 impl Args {
-    fn arg() -> impl Arg<Item = Self> {
-        args_map! {
+    fn parser() -> impl meap::Parser<Item = Self> {
+        meap::let_map! {
             let {
-                native_common = NativeCommon::arg();
-                fullscreen = flag("", "fullscreen", "start in fullscreen").some_if(Fullscreen);
-            } in {
+                native_common = NativeCommon::parser();
+                fullscreen = flag('f').name("fullscreen").desc("start in fullscreen");
+            } in {{
+                let fullscreen = if fullscreen {
+                    Some(Fullscreen)
+                } else {
+                    None
+                };
                 Self { native_common, fullscreen }
-            }
+            }}
         }
     }
 }
 
 fn main() {
+    use meap::Parser;
     env_logger::init();
     let Args {
         native_common:
@@ -116,8 +115,8 @@ fn main() {
                 game_config,
             },
         fullscreen,
-    } = Args::arg().with_help_default().parse_env_or_exit();
-    let (context, window_handle) = Context::new_returning_window_handle(ContextDescriptor {
+    } = Args::parser().with_help_default().parse_env_or_exit();
+    let context = Context::new(ContextDescriptor {
         font_bytes: FontBytes {
             normal: include_bytes!("./fonts/PxPlus_IBM_CGAthin-with-quadrant-blocks.ttf").to_vec(),
             bold: include_bytes!("./fonts/PxPlus_IBM_CGA-with-quadrant-blocks.ttf").to_vec(),
@@ -141,9 +140,10 @@ fn main() {
         },
         underline_width: 0.1,
         underline_top_offset: 0.8,
+        resizable: false,
     })
     .unwrap();
-    let env = GraphicalEnv::new(window_handle);
+    let env = GraphicalEnv::new(context.window_handle());
     let app = app(
         game_config,
         Frontend::Graphical,

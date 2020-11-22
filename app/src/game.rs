@@ -1,25 +1,24 @@
-use crate::audio::{Audio, AudioTable};
+use crate::audio::{AppAudioPlayer, AppHandle, Audio, AudioTable};
 use crate::controls::{AppInput, Controls};
 use crate::depth;
 use crate::frontend::Frontend;
+use chargrid::event_routine::common_event::*;
+use chargrid::event_routine::*;
+use chargrid::input::*;
+use chargrid::render::*;
+use chargrid::text::*;
 use direction::{CardinalDirection, Direction};
 use game::{
     CellVisibility, CharacterInfo, ExternalEvent, Game, GameControlFlow, Layer, Music, Tile, ToRenderEntity,
     VisibilityGrid,
 };
 pub use game::{Config as GameConfig, Input as GameInput, Omniscient};
+use general_audio_static::{AudioHandle, AudioPlayer};
+use general_storage_static::{format, StaticStorage};
 use line_2d::{Config as LineConfig, LineSegment};
-use prototty::event_routine::common_event::*;
-use prototty::event_routine::*;
-use prototty::input::*;
-use prototty::render::*;
-use prototty::text::*;
-use prototty_audio::{AudioHandle, AudioPlayer};
-use prototty_storage::{format, Storage};
 use rand::{Rng, SeedableRng};
 use rand_isaac::Isaac64Rng;
 use serde::{Deserialize, Serialize};
-use std::marker::PhantomData;
 use std::time::Duration;
 
 const CONFIG_KEY: &str = "config.json";
@@ -75,18 +74,18 @@ impl ScreenShake {
     }
 }
 
-struct EffectContext<'a, A: AudioPlayer> {
+struct EffectContext<'a> {
     rng: &'a mut Isaac64Rng,
     screen_shake: &'a mut Option<ScreenShake>,
     current_music: &'a mut Option<Music>,
-    current_music_handle: &'a mut Option<A::Handle>,
-    audio_player: &'a A,
-    audio_table: &'a AudioTable<A>,
+    current_music_handle: &'a mut Option<AppHandle>,
+    audio_player: &'a AppAudioPlayer,
+    audio_table: &'a AudioTable,
     player_coord: GameCoord,
     config: &'a Config,
 }
 
-impl<'a, A: AudioPlayer> EffectContext<'a, A> {
+impl<'a> EffectContext<'a> {
     fn next_frame(&mut self) {
         *self.screen_shake = self.screen_shake.and_then(|screen_shake| screen_shake.next());
     }
@@ -121,12 +120,7 @@ impl<'a, A: AudioPlayer> EffectContext<'a, A> {
     }
 }
 
-fn loop_music<A: AudioPlayer>(
-    audio_player: &A,
-    audio_table: &AudioTable<A>,
-    config: &Config,
-    music: Music,
-) -> A::Handle {
+fn loop_music(audio_player: &AppAudioPlayer, audio_table: &AudioTable, config: &Config, music: Music) -> AppHandle {
     let audio = match music {
         Music::Fiberitron => Audio::Fiberitron,
     };
@@ -547,26 +541,26 @@ impl GameInstance {
     }
 }
 
-pub struct GameData<S: Storage, A: AudioPlayer> {
+pub struct GameData {
     instance: Option<GameInstance>,
     controls: Controls,
     rng_seed_source: RngSeedSource,
     last_aim_with_mouse: bool,
-    storage_wrapper: StorageWrapper<S>,
-    audio_player: A,
-    audio_table: AudioTable<A>,
+    storage_wrapper: StorageWrapper,
+    audio_player: AppAudioPlayer,
+    audio_table: AudioTable,
     game_config: GameConfig,
     frontend: Frontend,
-    music_handle: Option<A::Handle>,
+    music_handle: Option<AppHandle>,
     config: Config,
 }
 
-struct StorageWrapper<S: Storage> {
-    storage: S,
+struct StorageWrapper {
+    storage: StaticStorage,
     save_key: String,
 }
 
-impl<S: Storage> StorageWrapper<S> {
+impl StorageWrapper {
     pub fn save_instance(&mut self, instance: &GameInstance) {
         self.storage
             .store(&self.save_key, instance, STORAGE_FORMAT)
@@ -598,13 +592,13 @@ impl RngSeedSource {
     }
 }
 
-impl<S: Storage, A: AudioPlayer> GameData<S, A> {
+impl GameData {
     pub fn new(
         game_config: GameConfig,
         controls: Controls,
-        storage: S,
+        storage: StaticStorage,
         save_key: String,
-        audio_player: A,
+        audio_player: AppAudioPlayer,
         rng_seed: RngSeed,
         frontend: Frontend,
     ) -> Self {
@@ -719,9 +713,7 @@ impl<S: Storage, A: AudioPlayer> GameData<S, A> {
 
 pub struct NoGameInstance;
 
-pub struct AimEventRoutine<S: Storage, A: AudioPlayer> {
-    s: PhantomData<S>,
-    a: PhantomData<A>,
+pub struct AimEventRoutine {
     screen_coord: ScreenCoord,
     duration: Duration,
     blink: Blink,
@@ -753,11 +745,9 @@ impl Blink {
     }
 }
 
-impl<S: Storage, A: AudioPlayer> AimEventRoutine<S, A> {
+impl AimEventRoutine {
     pub fn new(screen_coord: ScreenCoord) -> Self {
         Self {
-            s: PhantomData,
-            a: PhantomData,
             screen_coord,
             duration: Duration::from_millis(0),
             blink: Blink {
@@ -769,9 +759,9 @@ impl<S: Storage, A: AudioPlayer> AimEventRoutine<S, A> {
     }
 }
 
-impl<S: Storage, A: AudioPlayer> EventRoutine for AimEventRoutine<S, A> {
+impl EventRoutine for AimEventRoutine {
     type Return = Option<ScreenCoord>;
-    type Data = GameData<S, A>;
+    type Data = GameData;
     type View = GameView;
     type Event = CommonEvent;
 
@@ -799,6 +789,7 @@ impl<S: Storage, A: AudioPlayer> EventRoutine for AimEventRoutine<S, A> {
                 *last_aim_with_mouse = false;
                 let aim = match event {
                     CommonEvent::Input(input) => match input {
+                        Input::Gamepad(_) => Aim::Ignore,
                         Input::Keyboard(keyboard_input) => {
                             if let Some(app_input) = controls.get(keyboard_input) {
                                 match app_input {
@@ -918,22 +909,16 @@ impl<S: Storage, A: AudioPlayer> EventRoutine for AimEventRoutine<S, A> {
     }
 }
 
-pub struct GameEventRoutine<S: Storage, A: AudioPlayer> {
-    s: PhantomData<S>,
-    a: PhantomData<A>,
+pub struct GameEventRoutine {
     injected_inputs: Vec<InjectedInput>,
 }
 
-impl<S: Storage, A: AudioPlayer> GameEventRoutine<S, A> {
+impl GameEventRoutine {
     pub fn new() -> Self {
         Self::new_injecting_inputs(Vec::new())
     }
     pub fn new_injecting_inputs(injected_inputs: Vec<InjectedInput>) -> Self {
-        Self {
-            s: PhantomData,
-            a: PhantomData,
-            injected_inputs,
-        }
+        Self { injected_inputs }
     }
 }
 
@@ -944,9 +929,9 @@ pub enum GameReturn {
     GameOver,
 }
 
-impl<S: Storage, A: AudioPlayer> EventRoutine for GameEventRoutine<S, A> {
+impl EventRoutine for GameEventRoutine {
     type Return = GameReturn;
-    type Data = GameData<S, A>;
+    type Data = GameData;
     type View = GameView;
     type Event = CommonEvent;
 
@@ -984,6 +969,7 @@ impl<S: Storage, A: AudioPlayer> EventRoutine for GameEventRoutine<S, A> {
             event_or_peek_with_handled(event_or_peek, self, |s, event| match event {
                 CommonEvent::Input(input) => {
                     match input {
+                        Input::Gamepad(_) => (),
                         Input::Keyboard(keyboard_input) => {
                             if keyboard_input == keys::ESCAPE {
                                 return Handled::Return(GameReturn::Pause);
@@ -1052,25 +1038,21 @@ impl<S: Storage, A: AudioPlayer> EventRoutine for GameEventRoutine<S, A> {
     }
 }
 
-pub struct GameOverEventRoutine<S: Storage, A: AudioPlayer> {
-    s: PhantomData<S>,
-    a: PhantomData<A>,
+pub struct GameOverEventRoutine {
     duration: Duration,
 }
 
-impl<S: Storage, A: AudioPlayer> GameOverEventRoutine<S, A> {
+impl GameOverEventRoutine {
     pub fn new() -> Self {
         Self {
-            s: PhantomData,
-            a: PhantomData,
             duration: Duration::from_millis(0),
         }
     }
 }
 
-impl<S: Storage, A: AudioPlayer> EventRoutine for GameOverEventRoutine<S, A> {
+impl EventRoutine for GameOverEventRoutine {
     type Return = ();
-    type Data = GameData<S, A>;
+    type Data = GameData;
     type View = GameView;
     type Event = CommonEvent;
 
@@ -1086,6 +1068,7 @@ impl<S: Storage, A: AudioPlayer> EventRoutine for GameOverEventRoutine<S, A> {
         if let Some(instance) = data.instance.as_mut() {
             event_or_peek_with_handled(event_or_peek, self, |mut s, event| match event {
                 CommonEvent::Input(input) => match input {
+                    Input::Gamepad(_) => Handled::Continue(s),
                     Input::Keyboard(_) => Handled::Return(()),
                     Input::Mouse(_) => Handled::Continue(s),
                 },
@@ -1129,13 +1112,11 @@ impl<S: Storage, A: AudioPlayer> EventRoutine for GameOverEventRoutine<S, A> {
     }
 }
 
-pub struct MapEventRoutine<S: Storage, A: AudioPlayer> {
-    s: PhantomData<S>,
-    a: PhantomData<A>,
+pub struct MapEventRoutine {
     offset: Coord,
 }
 
-impl<S: Storage, A: AudioPlayer> MapEventRoutine<S, A> {
+impl MapEventRoutine {
     pub fn new_centred_on_player(instance: &GameInstance) -> Self {
         let player_coord = GameCoord::of_player(instance.game.player_info());
         let offset = ScreenCoordToGameCoord {
@@ -1144,17 +1125,13 @@ impl<S: Storage, A: AudioPlayer> MapEventRoutine<S, A> {
         }
         .compute()
         .0;
-        Self {
-            s: PhantomData,
-            a: PhantomData,
-            offset,
-        }
+        Self { offset }
     }
 }
 
-impl<S: Storage, A: AudioPlayer> EventRoutine for MapEventRoutine<S, A> {
+impl EventRoutine for MapEventRoutine {
     type Return = ();
-    type Data = GameData<S, A>;
+    type Data = GameData;
     type View = GameView;
     type Event = CommonEvent;
 
@@ -1166,6 +1143,7 @@ impl<S: Storage, A: AudioPlayer> EventRoutine for MapEventRoutine<S, A> {
         if let Some(_instance) = data.instance.as_mut() {
             event_or_peek_with_handled(event_or_peek, self, |mut s, event| match event {
                 CommonEvent::Input(input) => match input {
+                    Input::Gamepad(_) => Handled::Continue(s),
                     Input::Keyboard(keyboard_input) => {
                         if let Some(app_input) = controls.get(keyboard_input) {
                             match app_input {

@@ -5,7 +5,7 @@ use crate::world::{
     ExternalEvent, World,
 };
 use direction::{CardinalDirection, Direction};
-use ecs::Entity;
+use entity_table::Entity;
 use grid_2d::Coord;
 use rand::Rng;
 

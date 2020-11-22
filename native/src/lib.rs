@@ -1,9 +1,11 @@
-use prototty_file_storage::IfDirectoryMissing;
-pub use prototty_file_storage::{FileStorage, Storage};
-use prototty_native_audio::{Error as NativeAudioError, NativeAudioPlayer};
-use rip_prototty::{Controls, GameConfig, Omniscient, RngSeed};
-pub use simon;
-use simon::*;
+use general_audio_static::{
+    backend::{Error as NativeAudioError, NativeAudioPlayer},
+    StaticAudioPlayer,
+};
+use general_storage_static::backend::{FileStorage, IfDirectoryMissing};
+pub use general_storage_static::{StaticStorage, Storage};
+pub use meap;
+use rip_app::{AppAudioPlayer, Controls, GameConfig, Omniscient, RngSeed};
 use std::env;
 use std::fs::File;
 use std::io::Read;
@@ -16,9 +18,9 @@ const DEFAULT_NEXT_TO_EXE_CONTROLS_FILE: &str = "controls.json";
 pub struct NativeCommon {
     pub rng_seed: RngSeed,
     pub save_file: String,
-    pub file_storage: FileStorage,
+    pub file_storage: StaticStorage,
     pub controls: Controls,
-    pub audio_player: Option<NativeAudioPlayer>,
+    pub audio_player: AppAudioPlayer,
     pub game_config: GameConfig,
 }
 
@@ -30,21 +32,20 @@ fn read_controls_file(path: &PathBuf) -> Option<Controls> {
 }
 
 impl NativeCommon {
-    pub fn arg() -> impl Arg<Item = Self> {
-        args_map! {
+    pub fn parser() -> impl meap::Parser<Item = Self> {
+        meap::let_map! {
             let {
-                rng_seed = opt::<u64>("r", "rng-seed", "rng seed to use for first new game", "INT")
-                    .option_map(|seed| RngSeed::U64(seed))
-                    .with_default(RngSeed::Random);
-                save_file = opt("s", "save-file", "save file", "PATH")
+                rng_seed = opt_opt::<u64, _>("INT", 'r').name("rng-seed").desc("rng seed to use for first new game");
+                save_file = opt_opt("PATH", 's').name("save-file").desc("save file")
                     .with_default(DEFAULT_SAVE_FILE.to_string());
-                save_dir = opt("d", "save-dir", "save dir", "PATH")
+                save_dir = opt_opt("PATH", 'd').name("save-dir").desc("save dir")
                     .with_default(DEFAULT_NEXT_TO_EXE_SAVE_DIR.to_string());
-                controls_file = opt::<String>("c", "controls-file", "controls file", "PATH");
-                delete_save = flag("", "delete-save", "delete save game file");
-                omniscient = flag("", "omniscient", "enable omniscience").some_if(Omniscient);
-                mute = flag("m", "mute", "mute audio");
+                controls_file = opt_opt::<String, _>("PATH", 'c').name("controls-file").desc("controls file");
+                delete_save = flag("delete-save").desc("delete save game file");
+                omniscient = flag("omniscient").desc("enable omniscience");
+                mute = flag('m').name("mute").desc("mute audio");
             } in {{
+                let rng_seed = rng_seed.map(RngSeed::U64).unwrap_or(RngSeed::Random);
                 let controls_file = if let Some(controls_file) = controls_file {
                     controls_file.into()
                 } else {
@@ -52,10 +53,10 @@ impl NativeCommon {
                         .to_path_buf()
                 };
                 let controls = read_controls_file(&controls_file).unwrap_or_else(Controls::default);
-                let mut file_storage = FileStorage::next_to_exe(
+                let mut file_storage = StaticStorage::new(FileStorage::next_to_exe(
                     &save_dir,
                     IfDirectoryMissing::Create,
-                ).expect("failed to open directory");
+                ).expect("failed to open directory"));
                 if delete_save {
                     let result = file_storage.remove(&save_file);
                     if result.is_err() {
@@ -64,14 +65,22 @@ impl NativeCommon {
                 }
                 let audio_player = if mute {
                     None
-                } else {match NativeAudioPlayer::try_new_default_device() {
-                    Ok(audio_player) => Some(audio_player),
-                    Err(NativeAudioError::NoOutputDevice) => {
-                        log::warn!("no output audio device - continuing without audio");
+                } else {
+                    match NativeAudioPlayer::try_new_default_device() {
+                        Ok(audio_player) => Some(StaticAudioPlayer::new(audio_player)),
+                        Err(NativeAudioError::NoOutputDevice) => {
+                            log::warn!("no output audio device - continuing without audio");
+                            None
+                        }
+                    }
+                };
+                let game_config = GameConfig {
+                    omniscient: if omniscient {
+                        Some(Omniscient)
+                    } else {
                         None
                     }
-                }};
-                let game_config = GameConfig { omniscient };
+                };
                 Self {
                     rng_seed,
                     save_file,

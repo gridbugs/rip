@@ -1,7 +1,7 @@
-use prototty_ansi_terminal::{col_encode, Context};
+use chargrid_ansi_terminal::{col_encode, Context};
 use rand::Rng;
-use rip_native::{simon::*, NativeCommon};
-use rip_prototty::{app, AutoPlay, EnvNull, Frontend, RngSeed};
+use rip_app::{app, AutoPlay, EnvNull, Frontend, RngSeed};
+use rip_native::{meap, NativeCommon};
 
 #[derive(Clone)]
 enum ColEncodeChoice {
@@ -12,15 +12,16 @@ enum ColEncodeChoice {
 }
 
 impl ColEncodeChoice {
-    fn arg() -> impl Arg<Item = Self> {
+    fn parser() -> impl meap::Parser<Item = Self> {
+        use meap::Parser;
         use ColEncodeChoice::*;
-        (args_choice! {
-            flag("", "true-colour", "").some_if(TrueColour),
-            flag("", "rgb", "").some_if(Rgb),
-            flag("", "greyscale", "").some_if(Greyscale),
-            flag("", "ansi", "").some_if(Ansi),
-        })
-        .with_default(TrueColour)
+        meap::choose_at_most_one!(
+            flag("true-colour").some_if(TrueColour),
+            flag("rgb").some_if(Rgb),
+            flag("greyscale").some_if(Greyscale),
+            flag("ansi").some_if(Ansi),
+        )
+        .with_default_general(TrueColour)
     }
 }
 
@@ -30,11 +31,11 @@ struct Args {
 }
 
 impl Args {
-    fn arg() -> impl Arg<Item = Self> {
-        args_map! {
+    fn parser() -> impl meap::Parser<Item = Self> {
+        meap::let_map! {
             let {
-                native_common = NativeCommon::arg();
-                col_encode_choice = ColEncodeChoice::arg();
+                native_common = NativeCommon::parser();
+                col_encode_choice = ColEncodeChoice::parser();
             } in {
                 Self { native_common, col_encode_choice }
             }
@@ -43,6 +44,7 @@ impl Args {
 }
 
 fn main() {
+    use meap::Parser;
     env_logger::init();
     let Args {
         native_common:
@@ -55,7 +57,7 @@ fn main() {
                 game_config,
             },
         col_encode_choice,
-    } = Args::arg().with_help_default().parse_env_or_exit();
+    } = Args::parser().with_help_default().parse_env_or_exit();
     // We won't be able to print once the context is created. Choose the initial rng
     // seed before starting the game so it can be logged in case of error.
     let rng_seed_u64 = match rng_seed {

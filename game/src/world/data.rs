@@ -3,11 +3,10 @@ pub use crate::world::{
     explosion_spec,
     spatial::{Layer, Location},
 };
-use ecs::ecs_components;
 use rgb24::Rgb24;
 use serde::{Deserialize, Serialize};
 
-ecs_components! {
+entity_table::declare_entity_module! {
     components {
         tile: Tile,
         opacity: u8,

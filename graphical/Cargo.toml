@@ -5,13 +5,12 @@ authors = ["Stephen Sherratt <stephen@sherra.tt>"]
 edition = "2018"
 
 [features]
-default = ["prototty_graphical"]
-force_vulkan = ["prototty_graphical/force_vulkan"]
+force_vulkan = ["chargrid_graphical/force_vulkan"]
 force_dedicated_audio_thread = ["rip_native/force_dedicated_audio_thread"]
 
+
 [dependencies]
-env_logger = "0.7"
-prototty_graphical = { version = "0.29", optional = true }
-prototty_graphical_gfx = { version = "0.29", optional = true }
-rip_prototty = { path = "../prototty" }
+env_logger = "0.8"
+rip_app = { path = "../app" }
 rip_native = { path = "../native" }
+chargrid_graphical = { version = "0.3", features = ["gamepad"] }

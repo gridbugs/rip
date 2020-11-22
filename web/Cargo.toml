@@ -8,9 +8,10 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-prototty_web = { version = "0.29" }
-prototty_storage = { version = "0.29" }
-rip_prototty = { path = "../prototty", features = ["wasm"]}
+chargrid_web = { version = "0.1" }
+general_storage_static = { version = "0.1", features = ["web"] }
+general_audio_static = { version = "0.2", features = ["web"] }
+rip_app = { path = "../app", features = ["wasm"]}
 wasm-bindgen = "0.2"
 console_error_panic_hook = "0.1"
 wasm-logger = "0.2"

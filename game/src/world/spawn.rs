@@ -11,7 +11,7 @@ use crate::{
         World,
     },
 };
-use ecs::Entity;
+use entity_table::Entity;
 use grid_2d::Coord;
 use rational::Rational;
 use rgb24::Rgb24;
