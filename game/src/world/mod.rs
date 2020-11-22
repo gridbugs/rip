@@ -6,7 +6,7 @@ use rgb24::Rgb24;
 use serde::{Deserialize, Serialize};
 
 mod spatial;
-use spatial::Spatial;
+use spatial::SpatialTable;
 
 mod data;
 use data::{Components, Npc};
@@ -31,7 +31,7 @@ pub struct World {
     pub entity_allocator: EntityAllocator,
     pub components: Components,
     pub realtime_components: RealtimeComponents,
-    pub spatial: Spatial,
+    pub spatial: SpatialTable,
 }
 
 impl World {
@@ -39,7 +39,7 @@ impl World {
         let entity_allocator = EntityAllocator::default();
         let components = Components::default();
         let realtime_components = RealtimeComponents::default();
-        let spatial = Spatial::new(size);
+        let spatial = SpatialTable::new(size);
         Self {
             entity_allocator,
             components,
@@ -58,7 +58,7 @@ impl World {
         let blood_component = &self.components.blood;
         let ignore_lighting_component = &self.components.ignore_lighting;
         tile_component.iter().filter_map(move |(entity, &tile)| {
-            if let Some(location) = spatial.location(entity) {
+            if let Some(location) = spatial.location_of(entity) {
                 let fade = realtime_fade_component.get(entity).and_then(|f| f.state.fading());
                 let colour_hint = colour_hint_component.get(entity).cloned();
                 let blood = blood_component.contains(entity);
@@ -82,11 +82,11 @@ impl World {
         self.components
             .light
             .iter()
-            .filter_map(move |(entity, light)| self.spatial.coord(entity).map(|&coord| (coord, light)))
+            .filter_map(move |(entity, light)| self.spatial.coord_of(entity).map(|coord| (coord, light)))
     }
 
     pub fn character_info(&self, entity: Entity) -> Option<CharacterInfo> {
-        let &coord = self.spatial.coord(entity)?;
+        let coord = self.spatial.coord_of(entity)?;
         let &hit_points = self.components.hit_points.get(entity)?;
         Some(CharacterInfo { coord, hit_points })
     }
@@ -94,7 +94,7 @@ impl World {
 
 impl World {
     pub fn entity_coord(&self, entity: Entity) -> Option<Coord> {
-        self.spatial.coord(entity).cloned()
+        self.spatial.coord_of(entity)
     }
     pub fn entity_npc(&self, entity: Entity) -> &Npc {
         self.components.npc.get(entity).unwrap()

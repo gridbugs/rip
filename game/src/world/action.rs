@@ -1,8 +1,6 @@
 use crate::world::{
     data::{DoorState, OnCollision, ProjectileDamage, Tile},
-    explosion,
-    spatial::OccupiedBy,
-    ExternalEvent, World,
+    explosion, ExternalEvent, World,
 };
 use direction::{CardinalDirection, Direction};
 use entity_table::Entity;
@@ -11,9 +9,9 @@ use rand::Rng;
 
 impl World {
     pub fn character_walk_in_direction(&mut self, character: Entity, direction: CardinalDirection) {
-        let &current_coord = self.spatial.coord(character).unwrap();
+        let current_coord = self.spatial.coord_of(character).unwrap();
         let target_coord = current_coord + direction.coord();
-        if let Some(feature_entity) = self.spatial.get_cell(target_coord).and_then(|cell| cell.feature) {
+        if let Some(feature_entity) = self.spatial.layers_at(target_coord).and_then(|cell| cell.feature) {
             if self.components.solid.contains(feature_entity) {
                 if let Some(DoorState::Closed) = self.components.door_state.get(feature_entity).cloned() {
                     self.open_door(feature_entity);
@@ -21,7 +19,11 @@ impl World {
                 return;
             }
         }
-        if let Err(OccupiedBy(occupant)) = self.spatial.update_coord(character, target_coord) {
+        if let Err(occupant) = self
+            .spatial
+            .update_coord(character, target_coord)
+            .map_err(|e| e.unwrap_occupied_by())
+        {
             self.melee_attack(character, occupant);
         }
     }
@@ -39,7 +41,7 @@ impl World {
     }
 
     pub fn character_fire_bullet(&mut self, character: Entity, target: Coord) {
-        let &character_coord = self.spatial.coord(character).unwrap();
+        let character_coord = self.spatial.coord_of(character).unwrap();
         if character_coord == target {
             return;
         }
@@ -49,7 +51,7 @@ impl World {
 
     pub fn character_fire_shotgun<R: Rng>(&mut self, character: Entity, target: Coord, rng: &mut R) {
         const NUM_BULLETS: usize = 12;
-        let &character_coord = self.spatial.coord(character).unwrap();
+        let character_coord = self.spatial.coord_of(character).unwrap();
         if character_coord == target {
             return;
         }
@@ -64,7 +66,7 @@ impl World {
     }
 
     pub fn character_fire_rocket(&mut self, character: Entity, target: Coord) {
-        let &character_coord = self.spatial.coord(character).unwrap();
+        let character_coord = self.spatial.coord_of(character).unwrap();
         if character_coord == target {
             return;
         }
@@ -72,7 +74,7 @@ impl World {
     }
 
     pub fn projectile_stop(&mut self, projectile_entity: Entity, external_events: &mut Vec<ExternalEvent>) {
-        if let Some(&current_coord) = self.spatial.coord(projectile_entity) {
+        if let Some(current_coord) = self.spatial.coord_of(projectile_entity) {
             if let Some(on_collision) = self.components.on_collision.get(projectile_entity).cloned() {
                 match on_collision {
                     OnCollision::Explode(explosion_spec) => {
@@ -100,7 +102,7 @@ impl World {
         movement_direction: Direction,
         external_events: &mut Vec<ExternalEvent>,
     ) {
-        if let Some(&current_coord) = self.spatial.coord(projectile_entity) {
+        if let Some(current_coord) = self.spatial.coord_of(projectile_entity) {
             let next_coord = current_coord + movement_direction.coord();
             let collides_with = self
                 .components
@@ -108,7 +110,7 @@ impl World {
                 .get(projectile_entity)
                 .cloned()
                 .unwrap_or_default();
-            let &spatial_cell = self.spatial.get_cell_checked(next_coord);
+            let &spatial_cell = self.spatial.layers_at_checked(next_coord);
             if let Some(character_entity) = spatial_cell.character {
                 if let Some(&projectile_damage) = self.components.projectile_damage.get(projectile_entity) {
                     self.apply_projectile_damage(
@@ -137,7 +139,7 @@ impl World {
 
     pub fn damage_character(&mut self, character: Entity, hit_points_to_lose: u32) {
         if let Some(hit_points) = self.components.hit_points.get_mut(character) {
-            let &coord = self.spatial.coord(character).unwrap();
+            let coord = self.spatial.coord_of(character).unwrap();
             match hit_points.current.checked_sub(hit_points_to_lose) {
                 None | Some(0) => {
                     hit_points.current = 0;
@@ -154,7 +156,7 @@ impl World {
     }
 
     fn character_push_in_direction(&mut self, entity: Entity, direction: Direction) {
-        if let Some(&current_coord) = self.spatial.coord(entity) {
+        if let Some(current_coord) = self.spatial.coord_of(entity) {
             let target_coord = current_coord + direction.coord();
             if self.is_solid_feature_at_coord(target_coord) {
                 return;
@@ -170,7 +172,7 @@ impl World {
     }
 
     fn add_blood_stain_to_floor(&mut self, coord: Coord) {
-        if let Some(floor_entity) = self.spatial.get_cell_checked(coord).floor {
+        if let Some(floor_entity) = self.spatial.layers_at_checked(coord).floor {
             self.components.blood.insert(floor_entity, ());
         }
     }

@@ -39,7 +39,7 @@ pub fn make_player() -> EntityData {
 impl World {
     pub fn insert_entity_data(&mut self, location: Location, entity_data: EntityData) -> Entity {
         let entity = self.entity_allocator.alloc();
-        self.spatial.insert(entity, location).unwrap();
+        self.spatial.update(entity, location).unwrap();
         self.components.insert_entity_data(entity, entity_data);
         entity
     }
@@ -47,7 +47,7 @@ impl World {
     pub fn spawn_wall(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
@@ -64,7 +64,7 @@ impl World {
     pub fn spawn_former_human(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
@@ -87,7 +87,7 @@ impl World {
     pub fn spawn_human(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
@@ -110,7 +110,7 @@ impl World {
     pub fn spawn_floor(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
@@ -125,7 +125,7 @@ impl World {
     pub fn spawn_carpet(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
@@ -139,7 +139,7 @@ impl World {
 
     pub fn spawn_light(&mut self, coord: Coord, colour: Rgb24) -> Entity {
         let entity = self.entity_allocator.alloc();
-        self.spatial.insert(entity, Location { coord, layer: None }).unwrap();
+        self.spatial.update(entity, Location { coord, layer: None }).unwrap();
         self.components.light.insert(
             entity,
             Light {
@@ -156,7 +156,7 @@ impl World {
 
     pub fn spawn_flickering_light(&mut self, coord: Coord, colour: Rgb24) -> Entity {
         let entity = self.entity_allocator.alloc();
-        self.spatial.insert(entity, Location { coord, layer: None }).unwrap();
+        self.spatial.update(entity, Location { coord, layer: None }).unwrap();
         self.components.light.insert(
             entity,
             Light {
@@ -195,7 +195,7 @@ impl World {
 
     pub fn spawn_flash(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
-        self.spatial.insert(entity, Location { coord, layer: None }).unwrap();
+        self.spatial.update(entity, Location { coord, layer: None }).unwrap();
         self.components.light.insert(
             entity,
             Light {
@@ -221,7 +221,7 @@ impl World {
     pub fn spawn_bullet(&mut self, start: Coord, target: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord: start,
@@ -284,7 +284,7 @@ impl World {
     pub fn spawn_rocket(&mut self, start: Coord, target: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord: start,
@@ -373,7 +373,7 @@ impl World {
     pub fn spawn_explosion_emitter(&mut self, coord: Coord, spec: &explosion::spec::ParticleEmitter) {
         let emitter_entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(emitter_entity, Location { coord, layer: None })
+            .update(emitter_entity, Location { coord, layer: None })
             .unwrap();
         self.realtime_components.fade.insert(
             emitter_entity,
@@ -461,7 +461,7 @@ impl World {
 
     pub fn spawn_star(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
-        self.spatial.insert(entity, Location { coord, layer: None }).unwrap();
+        self.spatial.update(entity, Location { coord, layer: None }).unwrap();
         self.components.tile.insert(entity, Tile::Star);
         self.components.ignore_lighting.insert(entity, ());
         self.components.realtime.insert(entity, ());
@@ -491,7 +491,7 @@ impl World {
 
     pub fn spawn_space(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
-        self.spatial.insert(entity, Location { coord, layer: None }).unwrap();
+        self.spatial.update(entity, Location { coord, layer: None }).unwrap();
         self.components.tile.insert(entity, Tile::Space);
         self.components.ignore_lighting.insert(entity, ());
         entity
@@ -500,7 +500,7 @@ impl World {
     pub fn spawn_window(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
@@ -516,7 +516,7 @@ impl World {
     pub fn spawn_door(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
@@ -534,7 +534,7 @@ impl World {
     pub fn spawn_stairs(&mut self, coord: Coord) -> Entity {
         let entity = self.entity_allocator.alloc();
         self.spatial
-            .insert(
+            .update(
                 entity,
                 Location {
                     coord,
