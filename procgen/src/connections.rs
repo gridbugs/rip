@@ -72,11 +72,11 @@ impl WindowCandidate {
     fn choose<'a, R: Rng>(&'a self, rng: &mut R) -> impl 'a + Iterator<Item = Coord> {
         let min_length = 1 + self.length / 8;
         let max_length = 1 + self.length / 3;
-        let length = rng.gen_range(min_length, max_length + 1);
+        let length = rng.gen_range(min_length..(max_length + 1));
         let remaining_candidate_length = self.length - length;
         let min_offset = remaining_candidate_length / 4;
         let max_offset = remaining_candidate_length - min_offset;
-        let offset = rng.gen_range(min_offset, max_offset + 1);
+        let offset = rng.gen_range(min_offset..(max_offset + 1));
         (0..(length as i32)).map(move |i| self.top_left + Coord::new_axis(i + offset as i32, 0, self.axis.other()))
     }
 }
@@ -92,7 +92,7 @@ struct DoorCandidate {
 
 impl DoorCandidate {
     fn choose<R: Rng>(&self, rng: &mut R) -> Coord {
-        let offset = rng.gen_range(0, self.length as i32);
+        let offset = rng.gen_range(0..self.length as i32);
         self.top_left + Coord::new_axis(offset, 0, self.axis.other())
     }
     fn all<'a>(&'a self) -> impl 'a + Iterator<Item = Coord> {
@@ -227,9 +227,9 @@ fn make_random_door_candidate_graph_minimum_spanning_tree<R: Rng>(
 ) -> HashSet<DoorCandidateId> {
     let mut mst = HashSet::new();
     let mut visited_room_ids = HashSet::new();
-    let mut to_visit = vec![rng.gen_range(0, door_candidates.len())];
+    let mut to_visit = vec![rng.gen_range(0..door_candidates.len())];
     while !to_visit.is_empty() {
-        let door_candidate_id = to_visit.swap_remove(rng.gen_range(0, to_visit.len()));
+        let door_candidate_id = to_visit.swap_remove(rng.gen_range(0..to_visit.len()));
         let door_candidate = &door_candidates[door_candidate_id];
         let new_left = visited_room_ids.insert(door_candidate.left_room);
         let new_right = visited_room_ids.insert(door_candidate.right_room);
@@ -305,7 +305,7 @@ fn place_door<R: Rng>(candidate: &DoorCandidate, grid: &mut Grid<ConnectedCell>,
 }
 
 fn place_window<R: Rng>(candidate: &WindowCandidate, grid: &mut Grid<ConnectedCell>, rng: &mut R) {
-    if rng.gen_range(0, 3) > 0 {
+    if rng.gen_range(0..3) > 0 {
         for coord in candidate.choose(rng) {
             *grid.get_checked_mut(coord) = ConnectedCell::Window;
         }
@@ -319,7 +319,7 @@ pub fn add_connections<R: Rng>(grid: &Grid<HullCell>, rng: &mut R) -> Grid<Conne
     let chosen_door_candidates = choose_door_candidates(&door_candidate_graph, &candidates.door, rng);
     let mut grid = grid.clone();
     for &door_candidate_id in chosen_door_candidates.iter() {
-        if rng.gen_range(0, 10) == 0 {
+        if rng.gen_range(0..10) == 0 {
             let candidate = &candidates.door[door_candidate_id];
             for coord in candidate.all() {
                 *grid.get_checked_mut(coord) = HullCell::Floor;

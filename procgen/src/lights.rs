@@ -14,7 +14,7 @@ pub enum LightType {
 
 impl LightType {
     fn choose<R: Rng>(rng: &mut R) -> Self {
-        match rng.gen_range(0, 100) {
+        match rng.gen_range(0..100) {
             0..=19 => Self::Broken,
             20..=24 => Self::Flickering,
             25..=34 => Self::Emergency,

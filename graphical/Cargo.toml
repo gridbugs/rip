@@ -13,4 +13,4 @@ force_dedicated_audio_thread = ["rip_native/force_dedicated_audio_thread"]
 env_logger = "0.8"
 rip_app = { path = "../app" }
 rip_native = { path = "../native" }
-chargrid_graphical = { version = "0.3", features = ["gamepad"] }
+chargrid_graphical = { version = "0.4", features = ["gamepad"] }

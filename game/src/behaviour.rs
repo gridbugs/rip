@@ -171,7 +171,7 @@ impl<'a, R: Rng> BestSearch for Wander<'a, R> {
                     if my_coord.manhattan_distance(coord) < 4 {
                         let can_see_character =
                             has_line_of_sight(my_coord, coord, self.world, vision_distance::Circle::new_squared(40));
-                        if can_see_character && self.rng.gen_range(0, 4) > 0 {
+                        if can_see_character && self.rng.gen_range(0..4) > 0 {
                             return false;
                         }
                     }

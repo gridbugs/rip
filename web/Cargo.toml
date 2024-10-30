@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-chargrid_web = { version = "0.1" }
+chargrid_web = { version = "0.2" }
 general_storage_static = { version = "0.1", features = ["web"] }
 general_audio_static = { version = "0.2", features = ["web"] }
 rip_app = { path = "../app", features = ["wasm"]}

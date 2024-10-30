@@ -18,7 +18,7 @@ pub fn add_stars<R: Rng>(grid: &Grid<ConnectedCell>, rng: &mut R) -> Grid<StarCe
         ConnectedCell::Floor => StarCell::Floor,
         ConnectedCell::Window => StarCell::Window,
         ConnectedCell::Space => {
-            if rng.gen_range(0, 20) == 0 {
+            if rng.gen_range(0..20) == 0 {
                 StarCell::Star
             } else {
                 StarCell::Space
